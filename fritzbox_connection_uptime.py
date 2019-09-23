@@ -26,7 +26,7 @@ def print_values():
     except Exception as e:
         sys.exit(f"Couldn't get connection uptime: {e}")
 
-    uptime = conn.call_action('WANIPConnection', 'GetStatusInfo')['NewUptime']
+    uptime = conn.call_action('WANIPConn', 'GetStatusInfo')['NewUptime']
     print('uptime.value %.2f' % (int(uptime) / 86400.0))
 
 
