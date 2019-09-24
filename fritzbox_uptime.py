@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
   fritzbox_uptime - A munin plugin for Linux to monitor AVM Fritzbox
   Copyright (C) 2015 Christian Stade-Schuldt
@@ -24,8 +24,8 @@ import sys
 import fritzbox_helper as fh
 
 locale = os.environ.get('locale', 'de')
-patternLoc = {"de": "(\d+)\s(Tag|Stunden|Minuten)",
-              "en": "(\d+)\s(days|hours|minutes)"}
+patternLoc = {"de": b"(\d+)\s(Tag|Stunden|Minuten)",
+              "en": b"(\d+)\s(days|hours|minutes)"}
 dayLoc = {"de": "Tag", "en": "days"}
 hourLoc = {"de": "Stunden", "en": "hours"}
 minutesLoc = {"de": "Minuten", "en": "minutes"}
@@ -37,11 +37,11 @@ pattern = re.compile(patternLoc[locale])
 def get_uptime():
     """get the current uptime"""
 
-    server = os.environ['fritzbox_ip']
-    password = os.environ['FRITZ_PASSWORD']
+    server = os.getenv('fritzbox_ip')
+    password = os.getenv('FRITZ_PASSWORD')
 
     if "FRITZ_USERNAME" in os.environ:
-        fritzuser = os.environ['FRITZ_USERNAME']
+        fritzuser = os.getenv('FRITZ_USERNAME')
         session_id = fh.get_session_id(server, password, fritzuser)
     else:
         session_id = fh.get_session_id(server, password)
@@ -57,7 +57,7 @@ def get_uptime():
             if m.group(2) == minutesLoc[locale]:
                 hours += int(m.group(1)) / 60.0
         uptime = hours / 24
-        print "uptime.value %.2f" % uptime
+        print("uptime.value %.2f" % uptime)
 
 
 def print_config():
@@ -69,7 +69,7 @@ def print_config():
     print("uptime.label uptime")
     print("uptime.draw AREA")
     if os.environ.get('host_name'):
-        print("host_name " + os.environ['host_name'])
+        print("host_name " + os.getenv('host_name'))
 
 
 if __name__ == '__main__':
@@ -81,5 +81,5 @@ if __name__ == '__main__':
         # Some docs say it'll be called with fetch, some say no arg at all
         try:
             get_uptime()
-        except:
-            sys.exit("Couldn't retrieve fritzbox uptime")
+        except Exception as e:
+            sys.exit(f"Couldn't retrieve fritzbox uptime; {e}")

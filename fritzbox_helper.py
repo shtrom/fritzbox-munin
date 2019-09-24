@@ -60,7 +60,7 @@ def get_session_id(server, password, username=None, port=80):
     session_id = root.xpath('//SessionInfo/SID/text()')[0]
     if session_id == "0000000000000000":
         challenge = root.xpath('//SessionInfo/Challenge/text()')[0]
-        challenge_bf = ('{}-{}'.format(challenge, password)).decode('iso-8859-1').encode('utf-16le')
+        challenge_bf = ('{}-{}'.format(challenge, password)).encode('utf-16le')
         m = hashlib.md5()
         m.update(challenge_bf)
         response_bf = '{}-{}'.format(challenge, m.hexdigest().lower())
